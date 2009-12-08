@@ -46,7 +46,7 @@ sub call {
         return $res->finalize
     }
 
-    return;
+    return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
 }
 
 __PACKAGE__->meta->make_immutable;

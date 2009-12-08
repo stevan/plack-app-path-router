@@ -50,17 +50,22 @@ test_psgi
           {
               my $req = HTTP::Request->new(GET => "http://localhost/testing");
               my $res = $cb->($req);
-              is($res->content, 'testing', '... got the right value for index');
+              is($res->content, 'testing', '... got the right value for /testing');
           }
           {
               my $req = HTTP::Request->new(GET => "http://localhost/testing/stuff");
               my $res = $cb->($req);
-              is($res->content, 'testing, stuff', '... got the right value for index');
+              is($res->content, 'testing, stuff', '... got the right value for /testing/stuff');
           }
           {
               my $req = HTTP::Request->new(GET => "http://localhost/testing/edit/things");
               my $res = $cb->($req);
-              is($res->content, 'testing, things', '... got the right value for index');
+              is($res->content, 'testing, things', '... got the right value for /testing/edit/things');
+          }
+          {
+              my $req = HTTP::Request->new(GET => "http://localhost/foo/bar/baz");
+              my $res = $cb->($req);
+              is($res->content, 'Not Found', '... got the right value for 404');
           }
       };
 
