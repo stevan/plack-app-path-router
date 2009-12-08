@@ -7,7 +7,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 use Plack::Request;
 
-extends 'Plack::Middleware';
+extends 'Plack::Component';
 
 has 'router' => (
     is       => 'ro',
@@ -59,7 +59,7 @@ __END__
 
 =head1 NAME
 
-Plack::App::Path::Router - A Plack middleware for dispatching to Path::Router
+Plack::App::Path::Router - A Plack component for dispatching to Path::Router
 
 =head1 SYNOPSIS
 
@@ -74,12 +74,18 @@ Plack::App::Path::Router - A Plack middleware for dispatching to Path::Router
       }
   );
   $router->add_route('/:action/?:id' =>
+      validation => {
+          id => 'Int'
+      },
       target => sub {
           my ($request, $action, $id) = @_;
           # $action and $id are passed in ...
       }
   );
-  $router->add_route('/:action/edit/?:id' =>
+  $router->add_route('/:action/edit/:id' =>
+      validation => {
+          id => 'Int'
+      },
       target => sub {
           my ($r, $action, $id) = @_;
           # $action and $id are passed in ...
@@ -91,13 +97,16 @@ Plack::App::Path::Router - A Plack middleware for dispatching to Path::Router
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+This is a L<Plack::Component> subclass which creates an endpoint to dispatch
+using L<Path::Router>.
 
-=over 4
+This module expects an instance of L<Path::Router> whose routes all have a
+C<target> that is a CODE ref. The CODE ref will be called when a match is
+found and passed a L<Plack::Request> instance followed by any path captures
+that were found.
 
-=item B<>
-
-=back
+This thing is dead simple, if my docs don't make sense, then just read the
+source (all 54 lines of it).
 
 =head1 BUGS
 

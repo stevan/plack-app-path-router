@@ -36,7 +36,7 @@ $router->add_route('/:action/edit/?:id' =>
 
 my $app = Plack::App::Path::Router->new( router => $router );
 isa_ok($app, 'Plack::App::Path::Router');
-isa_ok($app, 'Plack::Middleware');
+isa_ok($app, 'Plack::Component');
 
 test_psgi
       app    => $app,
