@@ -40,7 +40,15 @@ sub call {
             }
         }
 
-        my $res = $match->target->( $req, @args );
+        my $target = $match->target;
+
+        my $res;
+        if (blessed $target && $target->can('call')) {
+            $res = $target->call( $req, @args );
+        }
+        else {
+            $res = $target->( $req, @args );
+        }
 
         if ( blessed $res && $res->can('finalize') ) {
             return $res->finalize;
