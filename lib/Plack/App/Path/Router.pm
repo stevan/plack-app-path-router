@@ -77,7 +77,11 @@ Plack::App::Path::Router - A Plack component for dispatching to Path::Router
   $router->add_route('/' =>
       target => sub {
           my ($request) = @_;
-          # ... do something with the $request
+          # use the Plack::Request to
+          # create a Plack::Response ...
+          my $response = $request->new_response( 200 );
+          $response->content_type('text/html');
+          $response->body('<html><body>HELLO WORLD</body></html>');
       }
   );
   $router->add_route('/:action/?:id' =>
@@ -86,7 +90,12 @@ Plack::App::Path::Router - A Plack component for dispatching to Path::Router
       },
       target => sub {
           my ($request, $action, $id) = @_;
-          # $action and $id are passed in ...
+          # return a PSGI response ...
+          [
+            200,
+            [ 'Content-Type' => 'text/html' ],
+            [ '<html><body>', $action, $id, '</body></html>' ]
+          ]
       }
   );
   $router->add_route('/:action/edit/:id' =>
@@ -95,7 +104,9 @@ Plack::App::Path::Router - A Plack component for dispatching to Path::Router
       },
       target => sub {
           my ($r, $action, $id) = @_;
-          # $action and $id are passed in ...
+          # return a string (we will wrap
+          # it in a PSGI response for you)
+          "This is my $action, and I am editing this $id";
       }
   );
 
@@ -110,7 +121,10 @@ using L<Path::Router>.
 This module expects an instance of L<Path::Router> whose routes all have a
 C<target> that is a CODE ref. The CODE ref will be called when a match is
 found and passed a L<Plack::Request> instance followed by any path captures
-that were found.
+that were found. It is expected that the target return one of the following;
+an object which responds to the C<finalize> method (like L<Plack::Response>),
+a properly formed PSGI response or a plain string (which we will wrap inside
+a PSGI response with a status of 200 and a content type of "text/html").
 
 This thing is dead simple, if my docs don't make sense, then just read the
 source (all 54 lines of it).
