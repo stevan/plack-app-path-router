@@ -85,7 +85,7 @@ Plack::App::Path::Router - A Plack component for dispatching to Path::Router
       }
   );
   $router->add_route('/:action/?:id' =>
-      validation => {
+      validations => {
           id => 'Int'
       },
       target => sub {
@@ -99,14 +99,14 @@ Plack::App::Path::Router - A Plack component for dispatching to Path::Router
       }
   );
   $router->add_route('/:action/edit/:id' =>
-      validation => {
+      validations => {
           id => 'Int'
       },
       target => sub {
           my ($r, $action, $id) = @_;
           # return a string (we will wrap
           # it in a PSGI response for you)
-          "This is my $action, and I am editing this $id";
+          "This is my action($action), and I am editing this id($id)";
       }
   );
 
