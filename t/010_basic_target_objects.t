@@ -17,7 +17,7 @@ BEGIN {
 
     has content => (is => 'ro');
 
-    sub call { (shift)->content }
+    sub execute { (shift)->content }
 }
 
 my $router = Path::Router->new;

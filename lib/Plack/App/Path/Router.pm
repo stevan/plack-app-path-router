@@ -43,8 +43,8 @@ sub call {
         my $target = $match->target;
 
         my $res;
-        if (blessed $target && $target->can('call')) {
-            $res = $target->call( $req, @args );
+        if (blessed $target && $target->can('execute')) {
+            $res = $target->execute( $req, @args );
         }
         else {
             $res = $target->( $req, @args );
@@ -117,6 +117,12 @@ Plack::App::Path::Router - A Plack component for dispatching with Path::Router
           "This is my action($action), and I am editing this id($id)";
       }
   );
+  $router->add_route('/foo' =>
+      # target objects are also supported
+      # as long as the object responds to
+      # the ->execute method
+      target => MyApp::Action->new( type => 'FOO' )
+  );
 
   # now create the Plack app
   my $app = Plack::App::Path::Router->new( router => $router );
@@ -127,7 +133,8 @@ This is a L<Plack::Component> subclass which creates an endpoint to dispatch
 using L<Path::Router>.
 
 This module expects an instance of L<Path::Router> whose routes all have a
-C<target> that is a CODE ref. The CODE ref will be called when a match is
+C<target> that is a CODE ref or an object which responds to the C<execute>
+method. The CODE ref or C<execute> method will be called when a match is
 found and passed a L<Plack::Request> instance followed by any path captures
 that were found. It is expected that the target return one of the following;
 an object which responds to the C<finalize> method (like L<Plack::Response>),
