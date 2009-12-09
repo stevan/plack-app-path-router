@@ -40,10 +40,17 @@ sub call {
             }
         }
 
-        my $res = $req->new_response( 200 );
-        $res->content_type('text/html');
-        $res->body( $match->target->( $req, @args ) );
-        return $res->finalize
+        my $res = $match->target->( $req, @args );
+
+        if ( blessed $res && $res->can('finalize') ) {
+            return $res->finalize;
+        }
+        elsif ( not ref $res ) {
+            return [ 200, [ 'Content-Type' => 'text/html' ], [ $res ] ];
+        }
+        else {
+            return $res;
+        }
     }
 
     return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
