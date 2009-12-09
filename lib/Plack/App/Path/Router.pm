@@ -66,7 +66,7 @@ __END__
 
 =head1 NAME
 
-Plack::App::Path::Router - A Plack component for dispatching to Path::Router
+Plack::App::Path::Router - A Plack component for dispatching with Path::Router
 
 =head1 SYNOPSIS
 
