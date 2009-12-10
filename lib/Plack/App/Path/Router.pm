@@ -22,7 +22,7 @@ sub call {
 
     my $req = Plack::Request->new( $env );
 
-    my $match = $self->router->match( $req->path );
+    my $match = $self->router->match( $req->path_info );
 
     if ( $match ) {
         $env->{'psgix.router.match'} = $match;
@@ -142,7 +142,7 @@ a properly formed PSGI response or a plain string (which we will wrap inside
 a PSGI response with a status of 200 and a content type of "text/html").
 
 This thing is dead simple, if my docs don't make sense, then just read the
-source (all 54 lines of it).
+source (all 65 lines of it).
 
 =head1 BUGS
 
