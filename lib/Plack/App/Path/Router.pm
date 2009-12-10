@@ -97,6 +97,7 @@ Plack::App::Path::Router - A Plack component for dispatching with Path::Router
           id => 'Int'
       },
       target => sub {
+          # matches are passed to the target sub ...
           my ($request, $action, $id) = @_;
           # return a PSGI response ...
           [
@@ -142,7 +143,7 @@ a properly formed PSGI response or a plain string (which we will wrap inside
 a PSGI response with a status of 200 and a content type of "text/html").
 
 This thing is dead simple, if my docs don't make sense, then just read the
-source (all 65 lines of it).
+source (all ~65 lines of it).
 
 =head1 BUGS
 
