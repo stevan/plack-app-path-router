@@ -18,14 +18,14 @@ has 'router' => (
 sub call {
     my($self, $env) = @_;
 
-    $env->{'router'} = $self->router;
+    $env->{'psgix.router'} = $self->router;
 
     my $req = Plack::Request->new( $env );
 
     my $match = $self->router->match( $req->path );
 
     if ( $match ) {
-        $env->{'router.match'} = $match;
+        $env->{'psgix.router.match'} = $match;
 
         my $route   = $match->route;
         my $mapping = $match->mapping;
@@ -36,7 +36,7 @@ sub call {
             next unless $name;
             if (my $value = $mapping->{ $name }) {
                 push @args => $value;
-                $env->{ ('router.match.' . $name) } = $value;
+                $env->{ ('psgix.router.match.' . $name) } = $value;
             }
         }
 
