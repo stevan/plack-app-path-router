@@ -1,6 +1,6 @@
 Revision history for Perl extension Plack::App::Path::Router
 
-0.02
+0.02 Thurs. Jan. 7, 2010
     - adding support for custom request classes
       - added tests for this
 
