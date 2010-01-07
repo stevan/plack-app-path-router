@@ -2,7 +2,7 @@ package Plack::App::Path::Router;
 use Moose;
 use MooseX::NonMoose;
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our $AUTHORITY = 'cpan:STEVAN';
 
 use Plack::Request;
@@ -15,12 +15,18 @@ has 'router' => (
     required => 1,
 );
 
+has 'request_class' => (
+    is      => 'ro',
+    isa     => 'ClassName',
+    default => sub { 'Plack::Request' },
+);
+
 sub call {
     my($self, $env) = @_;
 
     $env->{'psgix.router'} = $self->router;
 
-    my $req = Plack::Request->new( $env );
+    my $req = $self->request_class->new( $env );
 
     my $match = $self->router->match( $req->path_info );
 
@@ -143,7 +149,23 @@ a properly formed PSGI response or a plain string (which we will wrap inside
 a PSGI response with a status of 200 and a content type of "text/html").
 
 This thing is dead simple, if my docs don't make sense, then just read the
-source (all ~65 lines of it).
+source (all ~75 lines of it).
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item I<router>
+
+This is a required attribute and must be an instance of L<Path::Router>.
+
+=item I<request_class>
+
+This is a class name used to create the request object. It defaults to
+L<Plack::Request> but anything that will accept a PSGI-style C<$env> in
+the constructor and respond correctly to C<path_info> will work.
+
+=back
 
 =head1 BUGS
 
