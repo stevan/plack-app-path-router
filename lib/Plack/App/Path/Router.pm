@@ -2,7 +2,7 @@ package Plack::App::Path::Router;
 use Moose;
 use MooseX::NonMoose;
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:STEVAN';
 
 use Plack::Request;
@@ -24,14 +24,14 @@ has 'request_class' => (
 sub call {
     my($self, $env) = @_;
 
-    $env->{'psgix.router'} = $self->router;
+    $env->{'plack.router'} = $self->router;
 
     my $req = $self->request_class->new( $env );
 
     my $match = $self->router->match( $req->path_info );
 
     if ( $match ) {
-        $env->{'psgix.router.match'} = $match;
+        $env->{'plack.router.match'} = $match;
 
         my $route   = $match->route;
         my $mapping = $match->mapping;
@@ -42,7 +42,7 @@ sub call {
             next unless $name;
             if (my $value = $mapping->{ $name }) {
                 push @args => $value;
-                $env->{ ('psgix.router.match.' . $name) } = $value;
+                $env->{ ('plack.router.match.' . $name) } = $value;
             }
         }
 

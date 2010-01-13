@@ -1,5 +1,10 @@
 Revision history for Perl extension Plack::App::Path::Router
 
+0.03 Wed. Jan. 13, 2010
+    - storing the Path::Router instance, match and other
+      details in 'plack.router' instead of 'psgix.router'
+      as per discussions with miyagawa on #plack
+
 0.02 Thurs. Jan. 7, 2010
     - adding support for custom request classes
       - added tests for this
