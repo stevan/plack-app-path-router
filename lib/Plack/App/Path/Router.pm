@@ -46,18 +46,11 @@ sub call {
             }
         }
 
-        $env->{ ('plack.router.match.args') } = \@args;
-
         my $target = $match->target;
 
         my $res;
-        if (blessed $target) {
-            if ($target->can('execute')) {
-                $res = $target->execute( $req, @args );
-            }
-            elsif ($target->can('to_app')) {
-                $res = $target->to_app->( $env );
-            }
+        if (blessed $target && $target->can('execute')) {
+            $res = $target->execute( $req, @args );
         }
         else {
             $res = $target->( $req, @args );

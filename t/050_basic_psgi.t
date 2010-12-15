@@ -9,7 +9,7 @@ use Plack::Test;
 use Plack::Middleware::Auth::Basic;
 
 BEGIN {
-    use_ok('Plack::App::Path::Router');
+    use_ok('Plack::App::Path::Router::PSGI');
 }
 
 sub auth_cb {
@@ -18,11 +18,11 @@ sub auth_cb {
 }
 
 my $router = Path::Router->new;
-$router->add_route('/foo'     => target => Plack::Middleware::Auth::Basic->new( authenticator => \&auth_cb, app => sub { 'FOO' } ) );
-$router->add_route('/bar'     => target => sub { 'BAR' } );
-$router->add_route('/bar/baz' => target => Plack::Middleware::Auth::Basic->new( authenticator => \&auth_cb, app => sub { 'BAR/BAZ' } ) );
+$router->add_route('/foo'     => target => Plack::Middleware::Auth::Basic->new( authenticator => \&auth_cb, app => sub { [ 200, [], ['FOO']] } ) );
+$router->add_route('/bar'     => target => sub { [ 200, [], ['BAR']] } );
+$router->add_route('/bar/baz' => target => Plack::Middleware::Auth::Basic->new( authenticator => \&auth_cb, app => sub { [ 200, [], ['BAR/BAZ']] } ) );
 
-my $app = Plack::App::Path::Router->new( router => $router );
+my $app = Plack::App::Path::Router::PSGI->new( router => $router );
 
 test_psgi
       app    => $app,

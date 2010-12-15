@@ -1,9 +1,9 @@
 Revision history for Perl extension Plack::App::Path::Router
 
 0.04
-    - allowing Plack apps as targets now , basically
-      anything that responds to ->to_app
-      - added the t/005_basic_middleware_targets.t for this
+    - Add Plack::App::Path::Router::PSGI, which allows you
+      to dispatch to pure PSGI apps as targets
+      - added the t/050_basic_psgi.t for this
 
 0.03 Wed. Jan. 13, 2010
     - storing the Path::Router instance, match and other
