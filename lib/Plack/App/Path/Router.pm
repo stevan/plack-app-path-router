@@ -2,7 +2,7 @@ package Plack::App::Path::Router;
 use Moose;
 use MooseX::NonMoose;
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
 use Plack::Request;
@@ -22,7 +22,7 @@ has 'request_class' => (
 );
 
 sub call {
-    my($self, $env) = @_;
+    my ($self, $env) = @_;
 
     $env->{'plack.router'} = $self->router;
 
@@ -46,11 +46,18 @@ sub call {
             }
         }
 
+        $env->{ ('plack.router.match.args') } = \@args;
+
         my $target = $match->target;
 
         my $res;
-        if (blessed $target && $target->can('execute')) {
-            $res = $target->execute( $req, @args );
+        if (blessed $target) {
+            if ($target->can('execute')) {
+                $res = $target->execute( $req, @args );
+            }
+            elsif ($target->can('to_app')) {
+                $res = $target->to_app->( $env );
+            }
         }
         else {
             $res = $target->( $req, @args );
