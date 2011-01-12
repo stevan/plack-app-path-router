@@ -156,7 +156,7 @@ Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2009, 2010 Infinity Interactive, Inc.
+Copyright 2009-2011 Infinity Interactive, Inc.
 
 L<http://www.iinteractive.com>
 
