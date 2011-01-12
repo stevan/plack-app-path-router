@@ -37,7 +37,11 @@ sub call {
 
         $env->{ 'plack.router.match.args' } = \@args;
 
-        return $match->target->( $env );
+        my $target = $match->target;
+
+        return blessed $target && $target->can('to_app')
+             ? $target->to_app->( $env )
+             : $target->( $env );
     }
 
     return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
