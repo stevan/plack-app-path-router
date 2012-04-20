@@ -8,9 +8,7 @@ use Path::Router;
 use Plack::Test;
 use Plack::App::URLMap;
 
-BEGIN {
-    use_ok('Plack::App::Path::Router');
-}
+use Plack::App::Path::Router;
 
 my $router = Path::Router->new;
 $router->add_route('/' =>

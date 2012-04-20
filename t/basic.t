@@ -7,33 +7,28 @@ use Test::More;
 use Path::Router;
 use Plack::Test;
 
-BEGIN {
-    use_ok('Plack::App::Path::Router');
-}
+use Plack::App::Path::Router;
 
 my $router = Path::Router->new;
 $router->add_route('/' =>
     target => sub {
         my ($r) = @_;
         isa_ok($r, 'Plack::Request');
-        my $res = $r->new_response(200);
-        $res->body('index');
+        'index'
     }
 );
 $router->add_route('/:action/?:id' =>
     target => sub {
         my ($r, $action, $id) = @_;
         isa_ok($r, 'Plack::Request');
-        my $res = $r->new_response(200);
-        $res->body( join ", " => grep { $_ } $action, $id );
+        join ", " => grep { $_ } $action, $id;
     }
 );
 $router->add_route('/:action/edit/?:id' =>
     target => sub {
         my ($r, $action, $id) = @_;
         isa_ok($r, 'Plack::Request');
-        my $res = $r->new_response(200);
-        $res->body( join ", " => grep { $_ } $action, $id );
+        join ", " => grep { $_ } $action, $id;
     }
 );
 

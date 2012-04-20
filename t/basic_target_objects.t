@@ -7,9 +7,7 @@ use Test::More;
 use Path::Router;
 use Plack::Test;
 
-BEGIN {
-    use_ok('Plack::App::Path::Router');
-}
+use Plack::App::Path::Router;
 
 {
     package My::Action;
