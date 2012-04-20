@@ -1,6 +1,9 @@
 Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
+    - Add Plack::App::Path::Router::Custom, which gives more control
+      over exactly how things are passed into and out of the match target
+    - Converted to Dist::Zilla
 
 0.04  2011-01-12
     - Add Plack::App::Path::Router::PSGI, which allows you
