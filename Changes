@@ -1,6 +1,8 @@
 Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
+
+0.05  2012-04-20
     - Add Plack::App::Path::Router::Custom, which gives more control
       over exactly how things are passed into and out of the match target
     - Converted to Dist::Zilla
