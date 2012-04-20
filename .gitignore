@@ -12,6 +12,6 @@ MANIFEST.bak
 *.sw[po]
 .DS_Store
 .build
-{{$dist->name}}-*
+Plack-App-Path-Router-*
 *.bs
 *.o
