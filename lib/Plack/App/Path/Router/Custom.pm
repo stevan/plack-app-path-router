@@ -71,7 +71,7 @@ sub call {
         my $app = $self->target_to_app( $target );
         my $res = $app->( $req, @args );
 
-        return $self->handle_response( $res );
+        return $self->handle_response( $res, $req );
     }
 
     return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
