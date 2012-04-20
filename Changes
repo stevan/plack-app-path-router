@@ -1,19 +1,21 @@
-Revision history for Perl extension Plack::App::Path::Router
+Revision history for Plack-App-Path-Router
 
-0.04 Wed. Jan, 12, 2011
+{{$NEXT}}
+
+0.04  2011-01-12
     - Add Plack::App::Path::Router::PSGI, which allows you
       to dispatch to pure PSGI apps as targets
       - added the t/050_basic_psgi.t and t/051_basic_psgi_w_obj.t
         for this
 
-0.03 Wed. Jan. 13, 2010
+0.03  2010-01-13
     - storing the Path::Router instance, match and other
       details in 'plack.router' instead of 'psgix.router'
       as per discussions with miyagawa on #plack
 
-0.02 Thurs. Jan. 7, 2010
+0.02  2010-01-07
     - adding support for custom request classes
       - added tests for this
 
-0.01 Thurs. Dec. 10, 2009
+0.01  2009-12-10
     - First release of this module.

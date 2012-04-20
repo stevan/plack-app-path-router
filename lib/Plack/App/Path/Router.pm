@@ -1,73 +1,11 @@
 package Plack::App::Path::Router;
-use Moose;
-use MooseX::NonMoose;
+use Moose 0.90;
+use MooseX::NonMoose 0.07;
+# ABSTRACT: A Plack component for dispatching with Path::Router
 
-our $VERSION   = '0.04';
-our $AUTHORITY = 'cpan:STEVAN';
-
-use Plack::Request;
+use Plack::Request 0.08;
 
 extends 'Plack::App::Path::Router::Custom';
-
-has 'request_class' => (
-    is      => 'ro',
-    isa     => 'ClassName',
-    default => sub { 'Plack::Request' },
-);
-
-has '+new_request' => (
-    default => sub {
-        my $self = shift;
-        sub {
-            $self->request_class->new(@_);
-        };
-    },
-);
-
-has '+target_to_app' => (
-    default => sub {
-        sub {
-            my ($target) = @_;
-
-            if (blessed $target && $target->can('execute')) {
-                return sub { $target->execute(@_) };
-            }
-            else {
-                return $target;
-            }
-        };
-    },
-);
-
-has '+handle_response' => (
-    default => sub {
-        sub {
-            my ($res) = @_;
-
-            if ( blessed $res && $res->can('finalize') ) {
-                return $res->finalize;
-            }
-            elsif ( not ref $res ) {
-                return [ 200, [ 'Content-Type' => 'text/html' ], [ $res ] ];
-            }
-            else {
-                return $res;
-            }
-        };
-    },
-);
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose; 1;
-
-__END__
-
-=pod
-
-=head1 NAME
-
-Plack::App::Path::Router - A Plack component for dispatching with Path::Router
 
 =head1 SYNOPSIS
 
@@ -138,39 +76,71 @@ a PSGI response with a status of 200 and a content type of "text/html").
 This thing is dead simple, if my docs don't make sense, then just read the
 source (all ~75 lines of it).
 
-=head1 ATTRIBUTES
+=cut
 
-=over 4
-
-=item I<router>
+=attr router
 
 This is a required attribute and must be an instance of L<Path::Router>.
 
-=item I<request_class>
+=cut
+
+=attr request_class
 
 This is a class name used to create the request object. It defaults to
 L<Plack::Request> but anything that will accept a PSGI-style C<$env> in
 the constructor and respond correctly to C<path_info> will work.
 
-=back
-
-=head1 BUGS
-
-All complex software has bugs lurking in it, and this module is no
-exception. If you find a bug please either email me, or add the bug
-to cpan-RT.
-
-=head1 AUTHOR
-
-Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2009-2011 Infinity Interactive, Inc.
-
-L<http://www.iinteractive.com>
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
 =cut
+
+has 'request_class' => (
+    is      => 'ro',
+    isa     => 'ClassName',
+    default => sub { 'Plack::Request' },
+);
+
+has '+new_request' => (
+    default => sub {
+        my $self = shift;
+        sub {
+            $self->request_class->new(@_);
+        };
+    },
+);
+
+has '+target_to_app' => (
+    default => sub {
+        sub {
+            my ($target) = @_;
+
+            if (blessed $target && $target->can('execute')) {
+                return sub { $target->execute(@_) };
+            }
+            else {
+                return $target;
+            }
+        };
+    },
+);
+
+has '+handle_response' => (
+    default => sub {
+        sub {
+            my ($res) = @_;
+
+            if ( blessed $res && $res->can('finalize') ) {
+                return $res->finalize;
+            }
+            elsif ( not ref $res ) {
+                return [ 200, [ 'Content-Type' => 'text/html' ], [ $res ] ];
+            }
+            else {
+                return $res;
+            }
+        };
+    },
+);
+
+__PACKAGE__->meta->make_immutable;
+no Moose;
+
+1;

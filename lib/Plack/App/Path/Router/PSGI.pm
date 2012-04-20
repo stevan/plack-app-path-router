@@ -1,35 +1,9 @@
 package Plack::App::Path::Router::PSGI;
-use Moose;
-use MooseX::NonMoose;
-
-our $VERSION   = '0.04';
-our $AUTHORITY = 'cpan:STEVAN';
+use Moose 0.90;
+use MooseX::NonMoose 0.07;
+# ABSTRACT: A Plack component for dispatching with Path::Router to Pure PSGI targets
 
 extends 'Plack::App::Path::Router::Custom';
-
-has '+target_to_app' => (
-    default => sub {
-        sub {
-            my ($target) = @_;
-
-            return blessed $target && $target->can('to_app')
-                ? $target->to_app
-                : $target;
-        };
-    },
-);
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose; 1;
-
-__END__
-
-=pod
-
-=head1 NAME
-
-Plack::App::Path::Router::PSGI - A Plack component for dispatching with Path::Router to Pure PSGI targets
 
 =head1 SYNOPSIS
 
@@ -106,33 +80,27 @@ any valid match in 'plack.router.match' and the collected URL match args in
 This thing is dead simple, if my docs don't make sense, then just read the
 source (all ~45 lines of it).
 
-=head1 ATTRIBUTES
+=cut
 
-=over 4
-
-=item I<router>
+=attr router
 
 This is a required attribute and must be an instance of L<Path::Router>.
 
-=back
-
-=head1 BUGS
-
-All complex software has bugs lurking in it, and this module is no
-exception. If you find a bug please either email me, or add the bug
-to cpan-RT.
-
-=head1 AUTHOR
-
-Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2009-2011 Infinity Interactive, Inc.
-
-L<http://www.iinteractive.com>
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
 =cut
+
+has '+target_to_app' => (
+    default => sub {
+        sub {
+            my ($target) = @_;
+
+            return blessed $target && $target->can('to_app')
+                ? $target->to_app
+                : $target;
+        };
+    },
+);
+
+__PACKAGE__->meta->make_immutable;
+no Moose;
+
+1;
