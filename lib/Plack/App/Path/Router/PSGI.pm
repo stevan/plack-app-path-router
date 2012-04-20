@@ -5,47 +5,19 @@ use MooseX::NonMoose;
 our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:STEVAN';
 
-extends 'Plack::Component';
+extends 'Plack::App::Path::Router::Custom';
 
-has 'router' => (
-    is       => 'ro',
-    isa      => 'Path::Router',
-    required => 1,
+has '+target_to_app' => (
+    default => sub {
+        sub {
+            my ($target) = @_;
+
+            return blessed $target && $target->can('to_app')
+                ? $target->to_app
+                : $target;
+        };
+    },
 );
-
-sub call {
-    my ($self, $env) = @_;
-
-    $env->{'plack.router'} = $self->router;
-
-    my $match = $self->router->match( $env->{PATH_INFO} );
-
-    if ( $match ) {
-        $env->{'plack.router.match'} = $match;
-
-        my $route   = $match->route;
-        my $mapping = $match->mapping;
-
-        my @args;
-        foreach my $component ( @{ $route->components } ) {
-            my $name = $route->get_component_name( $component );
-            next unless $name;
-            if (my $value = $mapping->{ $name }) {
-                push @args => $value;
-            }
-        }
-
-        $env->{ 'plack.router.match.args' } = \@args;
-
-        my $target = $match->target;
-
-        return blessed $target && $target->can('to_app')
-             ? $target->to_app->( $env )
-             : $target->( $env );
-    }
-
-    return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
-}
 
 __PACKAGE__->meta->make_immutable;
 

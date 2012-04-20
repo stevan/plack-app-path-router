@@ -7,13 +7,7 @@ our $AUTHORITY = 'cpan:STEVAN';
 
 use Plack::Request;
 
-extends 'Plack::Component';
-
-has 'router' => (
-    is       => 'ro',
-    isa      => 'Path::Router',
-    required => 1,
-);
+extends 'Plack::App::Path::Router::Custom';
 
 has 'request_class' => (
     is      => 'ro',
@@ -21,54 +15,47 @@ has 'request_class' => (
     default => sub { 'Plack::Request' },
 );
 
-sub call {
-    my ($self, $env) = @_;
+has '+new_request' => (
+    default => sub {
+        my $self = shift;
+        sub {
+            $self->request_class->new(@_);
+        };
+    },
+);
 
-    $env->{'plack.router'} = $self->router;
+has '+target_to_app' => (
+    default => sub {
+        sub {
+            my ($target) = @_;
 
-    my $req = $self->request_class->new( $env );
-
-    my $match = $self->router->match( $req->path_info );
-
-    if ( $match ) {
-        $env->{'plack.router.match'} = $match;
-
-        my $route   = $match->route;
-        my $mapping = $match->mapping;
-
-        my @args;
-        foreach my $component ( @{ $route->components } ) {
-            my $name = $route->get_component_name( $component );
-            next unless $name;
-            if (my $value = $mapping->{ $name }) {
-                push @args => $value;
-                $env->{ ('plack.router.match.' . $name) } = $value;
+            if (blessed $target && $target->can('execute')) {
+                return sub { $target->execute(@_) };
             }
-        }
+            else {
+                return $target;
+            }
+        };
+    },
+);
 
-        my $target = $match->target;
+has '+handle_response' => (
+    default => sub {
+        sub {
+            my ($res) = @_;
 
-        my $res;
-        if (blessed $target && $target->can('execute')) {
-            $res = $target->execute( $req, @args );
-        }
-        else {
-            $res = $target->( $req, @args );
-        }
-
-        if ( blessed $res && $res->can('finalize') ) {
-            return $res->finalize;
-        }
-        elsif ( not ref $res ) {
-            return [ 200, [ 'Content-Type' => 'text/html' ], [ $res ] ];
-        }
-        else {
-            return $res;
-        }
-    }
-
-    return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
-}
+            if ( blessed $res && $res->can('finalize') ) {
+                return $res->finalize;
+            }
+            elsif ( not ref $res ) {
+                return [ 200, [ 'Content-Type' => 'text/html' ], [ $res ] ];
+            }
+            else {
+                return $res;
+            }
+        };
+    },
+);
 
 __PACKAGE__->meta->make_immutable;
 
