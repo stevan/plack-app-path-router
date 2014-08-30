@@ -194,7 +194,10 @@ sub call {
         return $self->handle_response( $res, $req );
     }
 
-    return [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ];
+    return $self->handle_response(
+      [ 404, [ 'Content-Type' => 'text/html' ], [ 'Not Found' ] ] ,
+      $req ,
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
