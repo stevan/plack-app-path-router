@@ -1,6 +1,8 @@
 Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
+    - return 404 via handle_response too 
+      (thanks to John "genehack" Anderson for this fix)
 
 0.05  2012-04-20
     - Add Plack::App::Path::Router::Custom, which gives more control
