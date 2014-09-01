@@ -1,6 +1,8 @@
 Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
+
+0.06  2014-09-01
     - return 404 via handle_response too 
       (thanks to John "genehack" Anderson for this fix)
 
