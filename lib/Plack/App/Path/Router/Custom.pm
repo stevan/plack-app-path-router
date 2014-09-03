@@ -1,6 +1,7 @@
 package Plack::App::Path::Router::Custom;
 use Moose 0.90;
 use MooseX::NonMoose 0.07;
+use Try::Tiny;
 # ABSTRACT: A Plack component for dispatching with Path::Router
 
 extends 'Plack::Component';
@@ -160,6 +161,24 @@ has handle_response => (
     },
 );
 
+=attr handle_exception
+
+Coderef which takes an exception thrown by the processing of the request and
+returns a valid PSGI response. Defaults to just rethrowing the caught
+exception.
+
+=cut
+
+has handle_exception => (
+    traits  => ['Code'],
+    isa     => 'CodeRef',
+    default => sub { sub { die $_[0] } },
+    handles => {
+        handle_exception => 'execute' ,
+    },
+);
+
+
 sub call {
     my ($self, $env) = @_;
 
@@ -188,10 +207,20 @@ sub call {
         $env->{ 'plack.router.match.args' } = \@args;
 
         my $target = $match->target;
-        my $app = $self->target_to_app( $target );
-        my $res = $app->( $req, @args );
 
-        return $self->handle_response( $res, $req );
+        my $handled_response;
+
+        try {
+            my $app = $self->target_to_app( $target );
+            my $res = $app->( $req, @args );
+
+            $handled_response = $self->handle_response( $res, $req );
+        }
+        catch {
+            $handled_response = $self->handle_exception( $_ );
+        };
+
+        return $handled_response;
     }
 
     return $self->handle_response(
