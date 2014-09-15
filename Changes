@@ -6,6 +6,10 @@ Revision history for Plack-App-Path-Router
       Plack::App::Path::Router::Custom, to provide more granular
       control over response handling. (John Anderson)
 
+0.06  2014-09-01
+    - return 404 via handle_response too 
+      (thanks to John "genehack" Anderson for this fix)
+
 0.05  2012-04-20
     - Add Plack::App::Path::Router::Custom, which gives more control
       over exactly how things are passed into and out of the match target
