@@ -5,13 +5,15 @@ use warnings;
 
 use Test::More;
 use Path::Router;
+use Plack::Response;
 use Plack::Test;
 use Scalar::Util qw/ blessed /;
 
 use Plack::App::Path::Router::Custom;
 
 my $router = Path::Router->new;
-$router->add_route('/bar' => target => sub { [ 200, [], ['BAR']] } );
+$router->add_route('/bar'  => target => sub { [ 200, [], ['BAR']] } );
+$router->add_route('/boom' => target => sub { die [ 500 , [] , ['500 Internal Service Error'] ] } );
 
 my $app = Plack::App::Path::Router::Custom->new(
     router => $router,
@@ -31,6 +33,12 @@ my $app = Plack::App::Path::Router::Custom->new(
             return $res;
         }
     },
+    handle_exception => sub {
+      if ( $ENV{PAPRC_PROD_TEST} ) {
+        return Plack::Response->new( 200 , [] , 'Sorry an error occurred. Try again later.' )->finalize();
+      }
+      return $_[0];
+    }
 );
 
 test_psgi
@@ -47,6 +55,19 @@ test_psgi
               my $res = $cb->($req);
               is($res->code, 404, '... got the expected fail');
               is($res->content, 'Overriden 404 message', '... got the expected message');
+          }
+          {
+              my $req = HTTP::Request->new(GET => "http://localhost/boom");
+              my $res = $cb->($req);
+              is($res->code, 500, '... got the expected fail');
+              is($res->content, '500 Internal Service Error', '... got the expected message');
+          }
+          {
+              $ENV{PAPRC_PROD_TEST} = 1;
+              my $req = HTTP::Request->new(GET => "http://localhost/boom");
+              my $res = $cb->($req);
+              is($res->code, 200, '... got the expected changed success');
+              is($res->content, 'Sorry an error occurred. Try again later.', '... got the expected message');
           }
       };
 
