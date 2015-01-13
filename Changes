@@ -1,6 +1,8 @@
 Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
+
+0.07  2015-01-13
     - Add 'handle_exception' method to
       Plack::App::Path::Router::Custom, to provide more granular
       control over response handling. (John Anderson)
