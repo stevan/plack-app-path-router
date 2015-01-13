@@ -105,6 +105,17 @@ test_psgi
               is($res->header('X-New-Request'), $res->header('X-Res-Req'));
           }
           {
+              my $req = HTTP::Request->new(GET => "http://localhost/bar/0", [ "Authorization" => "Basic YWRtaW46czNjcjN0" ]);
+              my $res = $cb->($req);
+              is($res->code, 200, '... got the expected auth fail');
+              is($res->content, 'BAR/0', '... got the right value for /bar/0');
+              like($res->header('X-New-Request'), qr/^HASH/);
+              is($res->header('X-Number-Of-Matches'), 1);
+              like($res->header('X-Res'), qr/^ARRAY/);
+              like($res->header('X-Res-Req'), qr/^HASH/);
+              is($res->header('X-New-Request'), $res->header('X-Res-Req'));
+          }
+          {
               my $req = HTTP::Request->new(GET => "http://localhost/bar/baz", [ "Authorization" => "Basic fake" ]);
               my $res = $cb->($req);
               is($res->code, 401, '... got the expected auth fail');
