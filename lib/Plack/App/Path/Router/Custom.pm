@@ -199,7 +199,8 @@ sub call {
         foreach my $component ( @{ $route->components } ) {
             my $name = $route->get_component_name( $component );
             next unless $name;
-            if (my $value = $mapping->{ $name }) {
+            my $value = $mapping->{ $name };
+            if (defined $value) {
                 push @args => $value;
                 $env->{ ('plack.router.match.args.' . $name) } = $value;
             }
