@@ -2,6 +2,8 @@ Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
 
+0.08  2015-01-17
+
     - Change 'handle_exception' so that it rethrows exception by
       default, rather than returning it.
 
