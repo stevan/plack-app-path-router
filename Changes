@@ -1,6 +1,11 @@
 Revision history for Plack-App-Path-Router
 
 {{$NEXT}}
+
+    - Change 'handle_exception' so that it rethrows exception by
+      default, rather than returning it.
+
+0.07 2015-01-13
     - Add 'handle_exception' method to
       Plack::App::Path::Router::Custom, to provide more granular
       control over response handling. (John Anderson)
