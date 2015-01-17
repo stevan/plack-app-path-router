@@ -164,16 +164,15 @@ has handle_response => (
 =attr handle_exception
 
 Coderef which takes an exception thrown by the processing of the request and
-returns a valid PSGI response. Defaults to just turning the caught
-exception. B<NOTE:> this coderef should B<return> the exception or modified
-response. Rethrowing the caught exception will produce undesired results.
+returns a valid PSGI response. Defaults to just rethrowing the caught
+exception.
 
 =cut
 
 has handle_exception => (
     traits  => ['Code'],
     isa     => 'CodeRef',
-    default => sub { sub { $_[0] } },
+    default => sub { sub { die $_[0] } },
     handles => {
         handle_exception => 'execute' ,
     },
